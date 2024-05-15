@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+
+  apache:
+    image: my_php
+    build:
+      context: php_apache
+      dockerfile: Dockerfile
+    volumes:
+      # mount your web app root dirctory to /var/www/html in apache
+      # use current directory
+      - ./webroot/:/var/www/html
+
+      # use absolute path D:\working\webapp
+      #- //d/working/webapp:/var/www/html
+    ports:
+      - "8001:80"
+    networks:
+      - net_db
+
+  mariadb:
+    image: mariadb:10.11
+    volumes:
+      #- ./db_mariadb:/var/lib/mysql
+      - ./init_mariadb:/docker-entrypoint-initdb.d/:ro
+    ports:
+      - "3307:3306"
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=db_test
+      - MYSQL_USER=db_user
+      - MYSQL_PASSWORD=db_pw
+      - TZ=Asia/Bangkok
+    networks:
+      - net_db
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    networks:
+      - net_db
+    ports:
+      - "8002:80"
+    environment:
+      - PMA_ARBITARY=1
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306
+    depends_on:
+      - mariadb
+
+  # adminer:
+  #   image: adminer:4.8.1
+  #   networks:
+  #     - net_db
+  #   ports:
+  #     - "8003:8080"
+  #   depends_on:
+  #     - mariadb
+
+volumes:
+  db-maria:
+
+networks:
+  net_db:
