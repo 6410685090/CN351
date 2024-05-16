@@ -18,19 +18,35 @@ $link = db_connect($server,$username,$password,$database);
 
 function login($username , $password){
     global $link;
-    $query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+    $query = "SELECT password FROM users WHERE username = '$username' ";
     $result = mysqli_query($link,$query);
     if (!$result){
         die('Query failed: '. mysqli_error($link));
     }
-    $user = mysqli_fetch_all($result,MYSQLI_ASSOC);
-    if (!empty($user)) {
+    $hashpassword = mysqli_fetch_all($result,MYSQLI_ASSOC);
+    if (empty($hashpassword)){
+        return false;
+    }
+    $hashpassword = $hashpassword[0]['password'];
+    if ($hashpassword == md5($password)){
         return true;
     }
     return false;
 }
 
+function getUser($username){
+    global $link;
+    $query = "SELECT * FROM users WHERE username = '$username'";
+    $result = mysqli_query($link,$query);
+    if (!$result){
+        die('Query failed: '. mysqli_error($link));
+    }
+    $user = mysqli_fetch_all($result,MYSQLI_ASSOC);
+    return $user;
+}
+
 function register($username, $password){
+    $password = md5($password);
     global $link;
     $query = "INSERT INTO users (username, password) VALUES ('$username','$password')";
     $result = mysqli_query($link,$query);
@@ -50,17 +66,18 @@ function isRegister($username){
     return false;
 }
 
-// function getUserRole($username){
-//     global $link;
-//     $query = "SELECT role FROM users WHERE username = '$username'";
-//     $result = mysqli_query($link,$query);
-//     $role = mysqli_fetch_all($result,MYSQLI_ASSOC);
-//     return $role;
-// }
+function changePassword($username, $password){
+    global $link;
+    $query = "UPDATE users SET password = '$password' WHERE username = '$username'";
+    $result = mysqli_query($link,$query);
+    if (!$result){
+        die('Query failed: '. mysqli_error($link));
+    }
+}
 
 function get_all_data (){
     global $link;
-    $query = 'SELECT * FROM persons ORDER BY id DESC;';
+    $query = 'SELECT *  FROM persons ORDER BY id DESC;';
     $result = mysqli_query($link,$query);
     if (!$result){
         die('Query failed: '. mysqli_error($link));
@@ -69,10 +86,22 @@ function get_all_data (){
     return $persons;
 }
 
-function insert_data($name, $surname, $email, $phone){
+function get_all_user(){
     global $link;
-    $query = "INSERT INTO persons (name, surname, email, phone) 
-              VALUES('$name','$surname','$email','$phone')";
+    $query = 'SELECT * FROM users ORDER BY id DESC;';
+    $result = mysqli_query($link,$query);
+    if (!$result){
+        die('Query failed: '. mysqli_error($link));
+    }
+    $user = mysqli_fetch_all($result,MYSQLI_ASSOC);
+    return $user;
+
+}
+
+function insert_data($name, $surname, $email, $phone , $address){
+    global $link;
+    $query = "INSERT INTO persons (name, surname, email, phone , address) 
+              VALUES('$name','$surname','$email','$phone','$address')";
     $result = mysqli_query($link,$query);
     if (!$result){
         die('Query failed: '. mysqli_error($link));
@@ -80,19 +109,54 @@ function insert_data($name, $surname, $email, $phone){
     return $result; //return True/False
 }
 
-function insert_data_secure($name, $surname, $email, $phone){
+function insert_data_secure($name, $surname, $email, $phone , $address){
     global $link;
     $stmt = mysqli_stmt_init($link);
-    $query = "INSERT INTO persons (name, surname, email, phone) 
-              VALUES (?,?,?,?)";
+    $query = "INSERT INTO persons (name, surname, email, phone , address) 
+              VALUES (?,?,?,?,?)";
     mysqli_stmt_prepare($stmt,$query);
 
-    mysqli_stmt_bind_param($stmt, 'ssss', $name,$surname,$email,$phone);
+    mysqli_stmt_bind_param($stmt, 'ssss', $name,$surname,$email,$phone,$address);
 
     return mysqli_stmt_execute($stmt); //return True/False
 }
 
+function getDataHack($data){
+    global $link;
+    $query = "INSERT INTO testDB (data) VALUES ('$data')";
+    $result = mysqli_query($link,$query);
+    if (!$result){
+        die('Query failed: '. mysqli_error($link));
+    }
+    return $result; //return True/False
+}
 
+function delete_data($id){
+    global $link;
+    $query = "DELETE FROM persons WHERE id = $id";
+    $result = mysqli_query($link,$query);
+    if (!$result){
+        die('Query failed: '. mysqli_error($link));
+    }
+    return $result; //return True/False
+}
+
+function search_data($name){
+    global $link;
+    $query = "SELECT * FROM persons WHERE name LIKE '%$name%'";
+    $result = mysqli_query($link,$query);
+    if (!$result){
+        die('Query failed: '. mysqli_error($link));
+    }
+    $persons = mysqli_fetch_all($result,MYSQLI_ASSOC);
+    return $persons;
+
+}
+
+function checkMyToken($username)
+{
+    return md5($username.'myToken') == $_COOKIE['myToken'];
+}
 
 
 

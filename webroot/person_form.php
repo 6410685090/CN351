@@ -21,7 +21,10 @@
         <input type="email" name="email" id="email" required><br>
         <label for="phone">Phone</label>
         <input type="tel" name="phone" id="phone" required><br>
+        <label for="address">Address</label>
+        <input type="text" name="address" id="address" required><br>
         <input type="hidden" name="insert" value="1">
+
 
         <input type="submit">
         <input type="reset">

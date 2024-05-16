@@ -7,14 +7,15 @@ if (isset($_POST['insert'])) {
     $surname = $_POST['surname'] ?? '';
     $email = $_POST['email'] ?? '';
     $phone = $_POST['phone'] ?? '';
-    if (insert_data($name, $surname, $email, $phone)){
+    $address = $_POST['address'] ?? '';
+    if (insert_data($name, $surname, $email, $phone, $address)){
         $message = "Data inserted successfully";
     } else{
-        $message = "Error inserting data";
+        $error = "Error inserting data";
     }
 }
-else{
-    $persons = get_all_data();
-    require_once 'data_view.php';
-}
+
+
+$persons = get_all_data();
+require_once 'data_view.php';
 
