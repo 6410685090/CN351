@@ -153,6 +153,18 @@ function search_data($name){
 
 }
 
+function serch_data_secure($name){
+    global $link;
+    $stmt = mysqli_stmt_init($link);
+    $query = "SELECT * FROM persons WHERE name LIKE ?";
+    mysqli_stmt_prepare($stmt,$query);
+    mysqli_stmt_bind_param($stmt, 's', $name);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $persons = mysqli_fetch_all($result,MYSQLI_ASSOC);
+    return $persons;
+}
+
 function checkMyToken($username)
 {
     return md5($username.'myToken') == $_COOKIE['myToken'];
