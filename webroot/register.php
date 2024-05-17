@@ -22,28 +22,20 @@ if (isset($_COOKIE['user'])){
             display: block;
             margin-top: .3em;
         }
-        a{
-            text-decoration: none;
-            color: black;
-            padding: 7px 8px;
-            border-radius: 5px;
-            background-color: lightgrey;
-        }
     </style>
 </head>
 <body>
-    <h1>Login</h1>
+    <h1>Register</h1>
     <form action="auth.php" method="post">
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required><br>
-        <input type="hidden" name="login" value="1">
-        <input type="submit" value="Login">
+        <label for="rusername">Username:</label>
+        <input type="text" name="rusername" id="rusername" required><br>
+        <label for="rpassword">Password:</label>
+        <input type="password" name="rpassword" id="rpassword" required><br>
+        <label for="rconfirmPassword">Confirm Password:</label>
+        <input type="password" name="rconfirmPassword" id="confirmPassword" required><br>
+        <input type="hidden" name="register" value="1">
+        <input type="submit" value="Register">
     </form>
-    <p>
-    <a href="register.php">Register</a>
-    </p>
     <?php 
     if (isset($message)){
         echo "<p>$message</p>";
