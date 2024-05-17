@@ -2,6 +2,8 @@
 
 require_once 'db_model.php';
 
+// comment is how to prevent brute force attack
+
 // session_start(); 
 
 if (isset($_POST['login'])) {
